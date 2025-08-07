@@ -1,0 +1,83 @@
+services:
+
+  postgres:
+    image: postgres:13 #6-alpine
+    container_name: mlflow_postgres
+    env_file: ./postgres.env
+#    environment:
+#      POSTGRES_USER: ${POSTGRES_USER}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - "mlflow-postgres-data:/var/lib/postgresql/data"
+    networks:
+      - mlflow-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: mlflow_minio
+    env_file: ./minio.env
+#    environment:
+#      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+#      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_UI_PORT:-9001}:9001"
+    command: 'server /data --console-address ":9001"'
+    volumes:
+      - "mlflow-minio-data:/data"
+    networks:
+      - mlflow-network
+
+  mlflow:
+    build:
+      context: . #/dockerfiles
+      dockerfile: Dockerfile.mlflow
+    image: mlflow-server:2025-08-07-16-20
+    container_name: mlflow_server
+    env_file: ./mlflow.env
+    depends_on:
+      - minio
+      - postgres
+    ports:
+      - "${MLFLOW_PORT:-5000}:5000"
+#    environment:
+#      MLFLOW_S3_ENDPOINT_URL: "http://minio:9000"
+#      AWS_ACCESS_KEY_ID: "minio"
+#      AWS_SECRET_ACCESS_KEY: "minio123"
+#      MLFLOW_TRACKING_URI: "postgresql://mlflow:mlflow@postgres:5432/mlflow"
+#      BUCKET_NAME: "mlflow"
+#      MLFLOW_S3_IGNORE_TLS: "true"
+#      MLFLOW_TRACKING_INSECURE_TLS: "true"
+#    entrypoint: mlflow server --backend-store-uri postgresql+psycopg2://mlflow:mlflow@postgres/mlflow --default-artifact-root s3://mlflow/ --artifacts-destination s3://mlflow/ -h 0.0.0.0
+    
+    networks:
+      - mlflow-network
+
+  python:
+    build:
+      context: . #/dockerfiles
+      dockerfile: Dockerfile.python
+    image: python-for-mlflow:2025-08-07-17-01
+    container_name: python-server
+    env_file: ./.env
+    depends_on:
+      - minio
+      - postgres
+      - mlflow
+    command: 'python demo.py'
+    networks:
+      - mlflow-network
+
+networks:
+  mlflow-network:
+    name: mlflow-network
+    driver: bridge
+
+volumes:
+  mlflow-postgres-data:
+#    driver: local
+  mlflow-minio-data:
+#    driver: local
