@@ -1,0 +1,22 @@
+FROM python:3.10-slim
+
+WORKDIR /mlflow
+
+COPY ./scripts/create_s3_bucket.* .
+
+RUN pip install --no-cache-dir \
+                mlflow==2.6.0 \
+                psycopg2-binary \
+                boto3 \
+                pymysql
+
+RUN chmod +x ./create_s3_bucket.*
+
+EXPOSE 5000
+
+RUN apt-get update \
+ && apt-get install -y nano
+
+RUN sed -i 's/\r$//' /mlflow/create_s3_bucket.sh
+
+CMD ["/bin/bash","/mlflow/create_s3_bucket.sh"]
