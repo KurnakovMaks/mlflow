@@ -1,0 +1,15 @@
+FROM jupyter/datascience-notebook:latest
+
+RUN pip install --upgrade --no-cache-dir \
+                jupyterlab-limit-output
+
+RUN mkdir -p /home/jovyan/.jupyter/lab/user-settings/jupyterlab-limit-output
+COPY ./extention-settings/jupyterlab-limit-output.config /home/jovyan/.jupyter/lab/user-settings/jupyterlab-limit-output/settings.jupyterlab-settings
+#RUN chmod g+w /home/jovyan/.jupyter/lab/user-settings/jupyterlab-limit-output/settings.jupyterlab-settings
+
+COPY ./requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+RUN poetry config virtualenvs.in-project true
+
+RUN jupyter lab build
+

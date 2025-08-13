@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  jupyter:
+    image: jupyter/datascience-notebook:latest
+    container_name: jupyter
+    ports:
+      - 8888:8888
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+      JUPYTER_TOKEN: "docker"
+    volumes:
+      - aijk2-data:/home/jovyan/work/data  # Named volume mount
+      - jupiter-notebooks:/home/jovyan/work/notebooks  # Named volume mount
+#      - ./work:/home/jovyan/work  # Optional bind mount for work directory
+
+volumes:
+  jupiter-notebooks:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./notebooks  # Host directory
+  aijk2-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data  # Host directory
