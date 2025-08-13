@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
 
   postgres:
@@ -33,11 +35,11 @@ services:
 
   mlflow:
     build:
-      context: . #/dockerfiles
+      context: ./mlflow/
       dockerfile: Dockerfile.mlflow
     image: mlflow-server:2025-08-07-16-20
     container_name: mlflow_server
-    env_file: ./envs/mlflow.env
+    env_file: ./mlflow/envs/mlflow.env
     depends_on:
       - minio
       - postgres
@@ -71,12 +73,50 @@ services:
     networks:
       - mlflow-network
 
+  jupyterlab:
+    build:
+      context: ./jupyterlab/
+      dockerfile: Dockerfile.jupyterlab
+    image: jupyterlab:custom
+    container_name: jupyterlab
+    env_file:
+      - ./jupyterlab/envs/jupyterlab.env
+      - ./jupyterlab/envs/python.env
+    ports:
+      - "${JUPYTERLAB_PORT:-8888}:8888"
+    volumes:
+      - aijk2-data:/home/jovyan/data  # Named volume mount
+      - jupiter-notebooks:/home/jovyan/notebooks  # Named volume mount
+      - jupiter-scripts:/home/jovyan/scripts  # Named volume mount
+#      - ./work:/home/jovyan/work  # Optional bind mount for work directory
+    networks:
+      - mlflow-network
+
 networks:
   mlflow-network:
     name: mlflow-network
     driver: bridge
 
 volumes:
+  jupiter-scripts:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./jupyterlab/scripts  # Host directory
+  jupiter-notebooks:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./jupyterlab/notebooks  # Host directory
+  aijk2-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./jupyterlab/data  # Host directory
+
   mlflow-postgres-data:
 #    driver: local
   mlflow-minio-data:
