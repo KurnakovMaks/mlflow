@@ -60,11 +60,11 @@ services:
 
   python:
     build:
-      context: . #/dockerfiles
+      context: ./python/
       dockerfile: Dockerfile.python
     image: python-for-mlflow:2025-08-07-17-01
     container_name: python-server
-    env_file: ./envs/python.env
+    env_file: ./python/envs/python.env
     depends_on:
       - minio
       - postgres
