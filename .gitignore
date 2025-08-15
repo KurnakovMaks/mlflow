@@ -1,2 +1,5 @@
-jupyterlab/notebooks/.ipynb_checkpoints
+**/.ipynb_checkpoints
 jupyterlab/data
+**/*.jpg
+**/*.session
+**/*.gif
