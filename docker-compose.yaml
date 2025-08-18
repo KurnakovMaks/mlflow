@@ -106,6 +106,8 @@ services:
     build:
       context: ./streamlit/
       dockerfile: Dockerfile.streamlit
+    depends_on:
+      - fastapi
     ports:
       - "8501:8501"
     networks:
