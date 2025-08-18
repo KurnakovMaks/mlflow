@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import mlflow
 import pandas as pd
-import numpy as np
+from pydantic import BaseModel
+
+import mlflow
+from fastapi import FastAPI
 
 app = FastAPI()
+
 
 # Define the input data model using Pydantic
 class InputData(BaseModel):
@@ -14,14 +15,16 @@ class InputData(BaseModel):
     s_width: float
 
 
-def get_model():
-    model = mlflow.sklearn.load_model(f"bfae199f2c514a0da7a140c938f5d59b/artifacts/model/")
+def get_model(model_id):
+    model = mlflow.sklearn.load_model(f"{model_id}/artifacts/model/")
     return model
+
 
 # create a route
 @app.get("/")
 def index():
     return {"text": "FastAPI with model"}
+
 
 # Define a route to accept input data and return predictions
 @app.post("/predict")
