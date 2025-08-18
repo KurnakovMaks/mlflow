@@ -98,6 +98,8 @@ services:
       dockerfile: Dockerfile.fastapi
     ports:
       - "8000:8000"
+    networks:
+      - mlflow-network
 
   streamlit:
     build:
@@ -105,6 +107,8 @@ services:
       dockerfile: Dockerfile.streamlit
     ports:
       - "8501:8501"
+    networks:
+      - mlflow-network
 
 networks:
   mlflow-network:
