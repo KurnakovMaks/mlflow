@@ -73,6 +73,21 @@ services:
     networks:
       - mlflow-network
 
+  python-iris:
+    build:
+      context: ./python/
+      dockerfile: Dockerfile.python-2
+    image: python-for-mlflow:2025-08-18-20-13
+    container_name: python-server-iris
+    env_file: ./python/envs/python.env
+    depends_on:
+      - minio
+      - postgres
+      - mlflow
+    command: 'python training.py'
+    networks:
+      - mlflow-network
+
   jupyterlab:
     build:
       context: ./jupyterlab/
