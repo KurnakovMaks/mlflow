@@ -1,4 +1,4 @@
-### Key Features:
+﻿### Key Features:
 
 1. **Telethon Authorization**:
    - Uses official Telegram API with session persistence
@@ -59,9 +59,9 @@
 ### Output Structure:
 ```
 downloads/
-├── 20230814_120045_1234.jpg
-├── 20230814_121530_1235.jpg
-└── ...
+в”њв”Ђв”Ђ 20230814_120045_1234.jpg
+в”њв”Ђв”Ђ 20230814_121530_1235.jpg
+в””в”Ђв”Ђ ...
 error.log
 ```
 
