@@ -1,10 +1,9 @@
-import mlflow
-
-
 from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+
+import mlflow
 
 # Load the Iris dataset
 data = load_iris()
@@ -12,9 +11,11 @@ X = data.data
 y = data.target
 
 # Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.5, random_state=42
+)
 
-for n in [10,40,60,80,100]:
+for n in [10, 40, 60, 80, 100]:
     mlflow.start_run()
     # Create and train a RandomForestClassifier
     clf = RandomForestClassifier(n_estimators=n)
