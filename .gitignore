@@ -3,3 +3,4 @@ jupyterlab/data
 **/*.jpg
 **/*.session
 **/*.gif
+**/__pycache__
