@@ -1,0 +1,25 @@
+[project]
+name = "mlops"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Max Kurnakov",email = "maks.kurnakov@mail.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mlflow (==2.6.0)",
+    "setuptools (>=80.9.0,<81.0.0)",
+    "boto3 (==1.40.11)",
+    "pydantic (>=2.11.7,<3.0.0)",
+    "fastapi (>=0.116.1,<0.117.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+package-mode = false
