@@ -1,0 +1,37 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Важная настройка: запись всех данных в VictoriaMetrics
+remote_write:
+  - url: http://victoria-metrics:8428/api/v1/write
+    queue_config:
+      max_samples_per_send: 10000
+      capacity: 10000
+      max_shards: 30
+
+scrape_configs:
+  # Мониторим сам Prometheus
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['172.17.0.1:9323']
+
+  - job_name: 'cadvisor'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+        - cadvisor:8080
+        #- gateway.internal:8080 #gateway
+        #- monitoring.internal:8080 #monitoring
+        #- main.internal:8080 #main
+        #- media.internal:8080 #media
+        #- cloud.internal:8080 #cloud
+
+  # Мониторим саму VictoriaMetrics
+  - job_name: 'victoria-metrics'
+    static_configs:
+      - targets: ['victoria-metrics:8428']
